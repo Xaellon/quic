@@ -684,7 +684,7 @@ func (s *Server) handleRequest(conn *connection, str quic.Stream, datagrams *dat
 				if logger == nil {
 					logger = slog.Default()
 				}
-				logger.Error("http: panic serving", "arg", p, "trace", buf)
+				logger.Error("http: panic serving", "arg", p, "trace", string(buf))
 			}
 		}()
 		handler.ServeHTTP(r, req)
@@ -747,10 +747,10 @@ func (s *Server) Close() error {
 	return err
 }
 
-// CloseGracefully shuts down the server gracefully.
+// Shutdown shuts down the server gracefully.
 // The server sends a GOAWAY frame first, then or for all running requests to complete.
-// CloseGracefully in combination with ListenAndServe() (instead of Serve()) may race if it is called before a UDP socket is established.
-func (s *Server) CloseGracefully(ctx context.Context) error {
+// Shutdown in combination with ListenAndServe() (instead of Serve()) may race if it is called before a UDP socket is established.
+func (s *Server) Shutdown(ctx context.Context) error {
 	s.mutex.Lock()
 	s.closed = true
 	// server is never used
