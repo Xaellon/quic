@@ -278,6 +278,7 @@ var newConnection = func(
 		clientAddressValidated,
 		s.conn.capabilities().ECN,
 		s.perspective,
+		protocol.ByteCount(s.config.Pacering),
 		s.tracer,
 		s.logger,
 	)
@@ -388,6 +389,7 @@ var newClientConnection = func(
 		false, // has no effect
 		s.conn.capabilities().ECN,
 		s.perspective,
+		protocol.ByteCount(s.config.Pacering),
 		s.tracer,
 		s.logger,
 	)

@@ -16,9 +16,10 @@ func NewAckHandler(
 	clientAddressValidated bool,
 	enableECN bool,
 	pers protocol.Perspective,
+	pacering protocol.ByteCount,
 	tracer *logging.ConnectionTracer,
 	logger utils.Logger,
 ) (SentPacketHandler, ReceivedPacketHandler) {
-	sph := newSentPacketHandler(initialPacketNumber, initialMaxDatagramSize, rttStats, clientAddressValidated, enableECN, pers, tracer, logger)
+	sph := newSentPacketHandler(initialPacketNumber, initialMaxDatagramSize, rttStats, clientAddressValidated, enableECN, pers, pacering, tracer, logger)
 	return sph, newReceivedPacketHandler(sph, logger)
 }

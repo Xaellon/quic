@@ -1,8 +1,6 @@
 package congestion
 
 import (
-	"os"
-	"strconv"
 	"time"
 
 	"github.com/quic-go/quic-go/internal/protocol"
@@ -23,9 +21,9 @@ var (
 
 type BrutalSender struct {
 	rttStats        *utils.RTTStats
-	bps             protocol.ByteCount
 	maxDatagramSize protocol.ByteCount
 	pacer           *pacer
+	pacering        protocol.ByteCount
 
 	pktInfoSlots [pktInfoSlotCount]pktInfo
 	ackRate      float64
@@ -107,7 +105,7 @@ func (b *BrutalSender) GetCongestionWindow() protocol.ByteCount {
 	if rtt <= 0 {
 		return 65536
 	}
-	cwnd := protocol.ByteCount(float64(b.bps) * rtt.Seconds() * congestionWindowMultiplier / b.ackRate)
+	cwnd := protocol.ByteCount(float64(b.pacering) * rtt.Seconds() * congestionWindowMultiplier / b.ackRate)
 	if cwnd < b.maxDatagramSize {
 		cwnd = b.maxDatagramSize
 	}
@@ -115,25 +113,16 @@ func (b *BrutalSender) GetCongestionWindow() protocol.ByteCount {
 }
 
 // NewBrutalSender makes a new brutal sender
-func NewBrutalSender(rttStats *utils.RTTStats) *BrutalSender {
-	var bw uint64 = 120
-	bwstr, exists := os.LookupEnv("brutal_pacering")
-	if exists {
-		value, err := strconv.ParseUint(bwstr, 10, 64)
-		if err == nil && value > 0 {
-			bw = value
-		}
-	}
-
+func NewBrutalSender(rttStats *utils.RTTStats, pacering protocol.ByteCount) *BrutalSender {
 	bs := &BrutalSender{
 		rttStats:        rttStats,
-		bps:             protocol.ByteCount(bw << 17),
 		maxDatagramSize: protocol.InitialPacketSize,
+		pacering:        pacering,
 		ackRate:         1,
 	}
 	bs.pacer = newPacer(
 		func() Bandwidth {
-			return Bandwidth(float64(bs.bps<<3) / bs.ackRate)
+			return Bandwidth(float64(bs.pacering<<3) / bs.ackRate)
 		})
 	return bs
 }
