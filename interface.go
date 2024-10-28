@@ -339,9 +339,6 @@ type Config struct {
 	Allow0RTT bool
 	// Enable QUIC datagram support (RFC 9221).
 	EnableDatagrams bool
-	// Pacering sets the upload bandwidth of the congestion control algorithm.
-	// If not set or equals to 0, the default cubic congestion control will be used.
-	Pacering uint64
 
 	Tracer func(context.Context, logging.Perspective, ConnectionID) *logging.ConnectionTracer
 }

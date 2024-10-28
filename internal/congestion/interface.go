@@ -26,3 +26,8 @@ type SendAlgorithmWithDebugInfos interface {
 	InRecovery() bool
 	GetCongestionWindow() protocol.ByteCount
 }
+
+// A CongestionEventEx invoked when congestion event occur
+type CongestionEventEx interface {
+	OnCongestionEventEx(priorInFlight protocol.ByteCount, eventTime time.Time, ackedPackets []protocol.AckedPacketInfo, lostPackets []protocol.LostPacketInfo)
+}
