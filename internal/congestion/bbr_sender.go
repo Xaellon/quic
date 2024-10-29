@@ -408,7 +408,7 @@ func (b *bbrSender) GetCongestionWindow() protocol.ByteCount {
 	return b.congestionWindow
 }
 
-// OnCongestionEventParticular implemnets the OnCongestionEventParticular interface
+// OnCongestionEventEx implements the OnCongestionEventEx interface
 func (b *bbrSender) OnCongestionEventEx(priorInFlight protocol.ByteCount, eventTime time.Time, ackedPackets []protocol.AckedPacketInfo, lostPackets []protocol.LostPacketInfo) {
 	totalBytesAckedBefore := b.sampler.TotalBytesAcked()
 	totalBytesLostBefore := b.sampler.TotalBytesLost()
