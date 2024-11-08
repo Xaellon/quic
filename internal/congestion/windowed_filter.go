@@ -1,4 +1,4 @@
-package utils
+package congestion
 
 import (
 	"golang.org/x/exp/constraints"
